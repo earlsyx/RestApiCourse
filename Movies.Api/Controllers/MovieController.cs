@@ -8,7 +8,6 @@ namespace Movies.Api.Controllers;
 
 
 [ApiController]
-[Route("api")]
 public class MovieController : ControllerBase
 {
     private readonly IMovieRepository _movieRepository;
@@ -17,12 +16,12 @@ public class MovieController : ControllerBase
         _movieRepository = movieRepository; 
     }
 
-    [HttpPost("movies")]
+    [HttpPost(ApiEndPoints.Movies.Create)]
     public async Task<IActionResult> Create([FromBody]CreateMovieRequest request)
     {
         var movie = request.MaptoMovie();
         await _movieRepository.CreateAsync(movie);
-        return Created($"/api/movies/{movie.Id}", movie);
+        return Created($"/{ApiEndPoints.Movies.Create}/{movie.Id}", movie);
     }
 }
 
