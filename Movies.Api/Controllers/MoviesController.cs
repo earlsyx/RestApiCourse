@@ -8,10 +8,10 @@ namespace Movies.Api.Controllers;
 
 
 [ApiController]
-public class MovieController : ControllerBase
+public class MoviesController : ControllerBase
 {
     private readonly IMovieRepository _movieRepository;
-    public MovieController(IMovieRepository movieRepository)
+    public MoviesController(IMovieRepository movieRepository)
     {
         _movieRepository = movieRepository; 
     }
@@ -45,5 +45,18 @@ public class MovieController : ControllerBase
         var moviesResponse = movies.MapToResponse();
         return Ok(moviesResponse);
     }
+
+    [HttpPut(ApiEndPoints.Movies.Update)]
+    public async Task<IActionResult> Update([FromRoute]Guid id, [FromBody]UpdateMovieRequest request)
+    {
+        var movie = request.MaptoMovie(id);
+        var updated = await _movieRepository.UpdateAsync(movie);
+        if (!updated)
+        {
+            return NotFound();
+        }
+        var response = movie.MapToResponse();
+        return Ok(response);
+    } 
 }
 
