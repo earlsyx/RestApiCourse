@@ -2,7 +2,7 @@ using Movies.Application;
 using Movies.Application.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
-
+var config = builder.Configuration;
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -10,6 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddApplication();
+builder.Services.AddDatabase(config["Database:ConnectionString"]!);
 
 var app = builder.Build();
 
