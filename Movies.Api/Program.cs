@@ -1,4 +1,5 @@
 using Dapper;
+using Movies.Api.Mapping;
 using Movies.Application;
 using Movies.Application.Database;
 using Movies.Application.Repositories;
@@ -26,6 +27,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.UseMiddleware<ValidationMappingMiddleware>();
 app.MapControllers();
 
 var dbInitializer = app.Services.GetRequiredService<DbInitializer>();
