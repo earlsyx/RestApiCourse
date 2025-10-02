@@ -21,7 +21,7 @@ namespace Movies.Application.Models
             return $"{sluggedTitle}-{YearOfRelease}";
         }
 
-        [GeneratedRegex("[^0-9A-Za-z_-]", RegexOptions.NonBacktracking, 5 )]
+        [GeneratedRegex("[^0-9A-Za-z _-]", RegexOptions.NonBacktracking, 5)]
         private static partial Regex SlugRegex();
     }
 }
