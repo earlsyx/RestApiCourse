@@ -15,6 +15,7 @@ public class RatingRepository : IRatingRepository
     {
         _dbConnectionFactory = dbConnectionFactory;
     }
+
     public async Task<float?> GetRatingAsync(Guid movieId, CancellationToken token = default)
     {
         using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
@@ -48,6 +49,18 @@ public class RatingRepository : IRatingRepository
             on conflict (userid, movieid) do update 
                 set rating = @rating
             """, new { userId, movieId, rating }, cancellationToken: token));
+
+        return result > 0;
+    }
+
+    public async Task<bool> DeleteRatingAsync(Guid movieId, Guid userId, CancellationToken token = default)
+    {
+        var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
+        var result = await connection.ExecuteAsync(new CommandDefinition("""
+            delete from ratings
+            where movieid = @movieId
+            and userid = @userId
+            """, new { userId, movieId }, cancellationToken: token));
 
         return result > 0;
     }

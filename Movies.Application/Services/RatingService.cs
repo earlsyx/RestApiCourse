@@ -1,5 +1,7 @@
-﻿using FluentValidation;
+﻿using Dapper;
+using FluentValidation;
 using FluentValidation.Results;
+using Movies.Application.Database;
 using Movies.Application.Repositories;
 using System;
 using System.Collections.Generic;
@@ -38,4 +40,10 @@ public class RatingService : IRatingService
 
         return await _ratingRepository.RateMovieAsync(movieId, rating, userId, token);
     }
+
+    public Task<bool> DeleteRatingAsync(Guid movieId, Guid userId, CancellationToken token = default)
+    {
+        return _ratingRepository.DeleteRatingAsync(movieId, userId, token);        
+    }
+
 }
