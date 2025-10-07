@@ -52,10 +52,12 @@ public class MoviesController : ControllerBase
         var options = request.MapToOptions()
             .WithUser(userId);
         var movies = await _movieService.GetAllAsync(options, token);
-        var moviesResponse = movies.MapToResponse();
+        var movieCount = await _movieService.GetCountAsync(options.Title, options.YearOfRelease, token);
+
+        var moviesResponse = movies.MapToResponse(request.Page, request.PageSize, movieCount);
         return Ok(moviesResponse);
     }
-
+     
     [Authorize(AuthConstants.TrustedMemberPolicyName)]
     [HttpPut(ApiEndPoints.Movies.Update)]
     public async Task<IActionResult> Update([FromRoute]Guid id, [FromBody]UpdateMovieRequest request, CancellationToken token)
