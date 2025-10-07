@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Movies.Contracts.Requests;
+namespace Movies.Contracts.Requests.V1;
 public class PageRequest
 {
     public required int Page { get; set; } = 1;

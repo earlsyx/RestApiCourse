@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Movies.Contracts.Requests;
+namespace Movies.Contracts.Requests.V1;
 public class GetAllMoviesRequest : PageRequest
 {
     public required string? Title { get; init; }
