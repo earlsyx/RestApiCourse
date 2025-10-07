@@ -12,6 +12,7 @@ namespace Movies.Api.Controllers;
 
 [ApiController]
 [ApiVersion(1.0)]
+[ApiVersion(2.0)]
 public class MoviesController : ControllerBase
 {
     private readonly IMovieService _movieService;
@@ -29,9 +30,28 @@ public class MoviesController : ControllerBase
         return CreatedAtAction(nameof(GetV1), new { idOrSlug = movie.Id }, movie);
     }
 
+    [MapToApiVersion(1.0)]
     [Authorize]
     [HttpGet(ApiEndPoints.Movies.Get)]
     public async Task<IActionResult> GetV1([FromRoute] string idOrSlug, CancellationToken token)
+    {
+        var userId = HttpContext.GetUserId();
+        var movie = Guid.TryParse(idOrSlug, out var id)
+            ? await _movieService.GetByIdAsync(id, userId, token)
+            : await _movieService.GetBySlugAsync(idOrSlug, userId, token);
+        if (movie is null)
+        {
+            return NotFound();
+        }
+
+        var response = movie.MapToResponse();
+        return Ok(response);
+    }
+
+    [MapToApiVersion(2.0)]
+    [Authorize]
+    [HttpGet(ApiEndPoints.Movies.Get)]
+    public async Task<IActionResult> GetV2([FromRoute] string idOrSlug, CancellationToken token)
     {
         var userId = HttpContext.GetUserId();
         var movie = Guid.TryParse(idOrSlug, out var id)
