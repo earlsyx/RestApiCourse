@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Movies.Api.Auth;
 using Movies.Api.Mapping;
 using Movies.Application.Services;
-using Movies.Contracts.Requests.V1;
+using Movies.Contracts.Requests;
 
-namespace Movies.Api.Controllers.V1;
+namespace Movies.Api.Controllers;
 
 [ApiController]
 public class RatingsController : ControllerBase
@@ -18,7 +18,7 @@ public class RatingsController : ControllerBase
     }
 
     [Authorize]
-    [HttpPut(ApiEndPoints.V1.Movies.Rate)]
+    [HttpPut(Api.ApiEndPoints.Movies.Rate)]
     public async Task<IActionResult> RateMovie([FromRoute] Guid id,
         [FromBody] RateMovieRequest request, CancellationToken token)
     {
@@ -28,7 +28,7 @@ public class RatingsController : ControllerBase
     }
 
     [Authorize]
-    [HttpDelete(ApiEndPoints.V1.Movies.DeleteRating)]
+    [HttpDelete(Api.ApiEndPoints.Movies.DeleteRating)]
     public async Task<IActionResult> DeleteRating([FromRoute] Guid id,
         CancellationToken token)
     {
@@ -38,11 +38,11 @@ public class RatingsController : ControllerBase
     }
 
     [Authorize]
-    [HttpGet(ApiEndPoints.V1.Ratings.GetUserRatings)]
+    [HttpGet(ApiEndPoints.Ratings.GetUserRatings)]
     public async Task<IActionResult> GetUserRatings(CancellationToken token = default)
     {
         var userId = HttpContext.GetUserId();
-        var ratings = await _ratingService.GetRatingsForUserAsync(userId!.Value, token);
+        var ratings = await _ratingService.GetRatingsForUserAsync(userId!.Value,token);
         var ratingsResponse = ratings.MapToResponse();
         return Ok(ratingsResponse);
     }

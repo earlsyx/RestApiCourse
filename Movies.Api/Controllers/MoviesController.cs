@@ -5,9 +5,9 @@ using Movies.Api.Mapping;
 using Movies.Application.Models;
 using Movies.Application.Repositories;
 using Movies.Application.Services;
-using Movies.Contracts.Requests.V1;
+using Movies.Contracts.Requests;
 
-namespace Movies.Api.Controllers.V1;
+namespace Movies.Api.Controllers;
 
 [ApiController]
 public class MoviesController : ControllerBase
@@ -15,12 +15,12 @@ public class MoviesController : ControllerBase
     private readonly IMovieService _movieService;
     public MoviesController(IMovieService movieService)
     {
-        _movieService = movieService;
+        _movieService = movieService; 
     }
 
     [Authorize(AuthConstants.TrustedMemberPolicyName)]
-    [HttpPost(ApiEndPoints.V1.Movies.Create)]
-    public async Task<IActionResult> Create([FromBody] CreateMovieRequest request, CancellationToken token)
+    [HttpPost(ApiEndPoints.Movies.Create)]
+    public async Task<IActionResult> Create([FromBody]CreateMovieRequest request, CancellationToken token)
     {
         var movie = request.MaptoMovie();
         await _movieService.CreateAsync(movie, token);
@@ -28,7 +28,7 @@ public class MoviesController : ControllerBase
     }
 
     [Authorize]
-    [HttpGet(ApiEndPoints.V1.Movies.Get)]
+    [HttpGet(ApiEndPoints.Movies.Get)]
     public async Task<IActionResult> Get([FromRoute] string idOrSlug, CancellationToken token)
     {
         var userId = HttpContext.GetUserId();
@@ -45,9 +45,9 @@ public class MoviesController : ControllerBase
     }
 
     [Authorize]
-    [HttpGet(ApiEndPoints.V1.Movies.GetAll)]
+    [HttpGet(ApiEndPoints.Movies.GetAll)]
     public async Task<IActionResult> GetAll([FromQuery] GetAllMoviesRequest request, CancellationToken token)
-    {
+     {
         var userId = HttpContext.GetUserId();
         var options = request.MapToOptions()
             .WithUser(userId);
@@ -57,10 +57,10 @@ public class MoviesController : ControllerBase
         var moviesResponse = movies.MapToResponse(request.Page, request.PageSize, movieCount);
         return Ok(moviesResponse);
     }
-
+     
     [Authorize(AuthConstants.TrustedMemberPolicyName)]
-    [HttpPut(ApiEndPoints.V1.Movies.Update)]
-    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateMovieRequest request, CancellationToken token)
+    [HttpPut(ApiEndPoints.Movies.Update)]
+    public async Task<IActionResult> Update([FromRoute]Guid id, [FromBody]UpdateMovieRequest request, CancellationToken token)
     {
         var movie = request.MaptoMovie(id);
         var userId = HttpContext.GetUserId();
@@ -74,8 +74,8 @@ public class MoviesController : ControllerBase
     }
 
     [Authorize(AuthConstants.AdminUserPolicyName)]
-    [HttpDelete(ApiEndPoints.V1.Movies.Delete)]
-    public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken token)
+    [HttpDelete(ApiEndPoints.Movies.Delete)]
+    public async Task<IActionResult> Delete([FromRoute]Guid id, CancellationToken token)
     {
         var deleted = await _movieService.DeleteByIdAsync(id, token);
         if (!deleted)
